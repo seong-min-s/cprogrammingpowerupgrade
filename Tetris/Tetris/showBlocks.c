@@ -179,23 +179,23 @@ char blockModel[][4][4]=
 		{0,0,0,0}
 	}
 };
+int blank[4][4] = {
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0}
+};
 int main(void)
 {
 	RemoveCursor();
-	SetCurrentCursorPos(0, 0);
-	ShowBlock(blockModel[0]);
-
-
-	SetCurrentCursorPos(0, 8);
-	ShowBlock(blockModel[1]);
-
-	SetCurrentCursorPos(12, 0);
-	ShowBlock(blockModel[2]);
-
-	SetCurrentCursorPos(12, 8);
-	ShowBlock(blockModel[3]);
-	getchar();
-
+	for (int i = 0; i < 5; i++) {
+		SetCurrentCursorPos(0, i);
+		ShowBlock(blockModel[0]);
+		//getchar();
+		Sleep(1000);
+		ShowBlock(blank);
+		//getchar();
+	}
 	//RemoveCursor();
 	return 0;
 }
@@ -212,6 +212,10 @@ void ShowBlock(char blockInfo[][4])
 
 			if (blockInfo[y][x] == 1)
 				printf("■");//콘솔에서 특수문자 출력은 두칸을 차지한다.
+			if (blockInfo[y][x] == 0)
+			{
+				printf(" ");
+			}
 		}
 		SetCurrentCursorPos(curPos.X, curPos.Y);
 	}
