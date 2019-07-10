@@ -7,4 +7,7 @@ int GetCurrentBlockIdx(void);
 void ShowBlock(char blockInfo[][4]);
 void DeleteBlock(char blockInfo[][4]);
 void BlockDown(void);
+void ShiftLeft(void);
+void ShiftRight(void);
+void RotateBlock(void);
 #endif

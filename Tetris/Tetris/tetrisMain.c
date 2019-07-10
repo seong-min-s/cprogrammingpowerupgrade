@@ -8,6 +8,8 @@
 
 int main(void)
 {
+	InitKeyDelayRate(20);
+
 	/*Ä¿¼­ ±ôºýÀÓ Á¦°Å*/
 	RemoveCursor();
 
@@ -15,11 +17,11 @@ int main(void)
 
 	ChooseBlock();
 
+
 	while (1)
 	{
 		BlockDown();
-
-		Sleep(SYS_DELAY);
+		ProcessKeyInput();
 	}
 	return 0;
 }

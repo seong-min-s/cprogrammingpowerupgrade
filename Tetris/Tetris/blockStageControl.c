@@ -5,6 +5,7 @@
 #include "keyCurControl.h"
 
 static int currentBlockModel;
+static int rotateSte;
 static int curPosX, curPosY;
 
 void InitNewBlockPos(int x, int y)
@@ -26,7 +27,7 @@ void ChooseBlock(void)
 
 int GetCurrentBlockIdx(void)
 {
-	return currentBlockModel;
+	return currentBlockModel+rotateSte;
 }
 
 void ShowBlock(char blockInfo[][4])
@@ -67,6 +68,34 @@ void BlockDown(void)
 {
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosY += 1;
+
+	SetCurrentCursorPos(curPosX, curPosY);
+	ShowBlock(blockModel[GetCurrentBlockIdx()]);
+}
+
+void ShiftLeft(void)
+{
+	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
+	curPosX -= 2;
+	SetCurrentCursorPos(curPosX, curPosY);
+	ShowBlock(blockModel[GetCurrentBlockIdx()]);
+}
+void ShiftRight(void)
+{
+	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
+	curPosX += 2;
+	SetCurrentCursorPos(curPosX, curPosY);
+	ShowBlock(blockModel[GetCurrentBlockIdx()]);
+}
+void RotateBlock(void)
+{
+	int nextRotSte;
+
+	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
+
+	nextRotSte = rotateSte + 1;
+	nextRotSte %= 4;
+	rotateSte = nextRotSte;
 
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
