@@ -8,6 +8,7 @@
 
 int main(void)
 {
+	int collision;
 	InitKeyDelayRate(20);
 
 	/*Ä¿¼­ ±ôºýÀÓ Á¦°Å*/
@@ -20,6 +21,12 @@ int main(void)
 
 	while (1)
 	{
+		collision = CheckCollision();
+		if (collision == 0|| collision == 1) {
+			InitNewBlockPos(START_CURPOS_X, START_CURPOS_Y);
+
+			ChooseBlock();
+		}
 		BlockDown();
 		ProcessKeyInput();
 	}

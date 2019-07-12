@@ -3,6 +3,7 @@
 #include "point.h"
 #include "blockInfo.h"
 #include "keyCurControl.h"
+#include "mapInfo.h"
 
 static int currentBlockModel;
 static int rotateSte;
@@ -66,6 +67,7 @@ void DeleteBlock(char blockInfo[][4])
 }
 void BlockDown(void)
 {
+	//checkCollision(); 충돌검사
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosY += 1;
 
@@ -99,4 +101,45 @@ void RotateBlock(void)
 
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
+}
+int CheckCollision()
+{
+	/*if ((curPosX + blockDetails[currentBlockModel].row < 0 && curPosX + blockDetails[currentBlockModel].col>99))
+		return 0;*/
+	if (curPosY + blockDetails[currentBlockModel].col > 30)//바닥충돌
+	{
+		for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
+		{
+			for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
+			{
+				if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1)
+				{
+					mapInfo[i][j] = 1;
+				}
+			}
+		}
+		return 0;
+	}
+	for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
+	{
+		for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
+		{
+			if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1 && mapInfo[i][j] != 0)
+			{
+				for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
+				{
+					for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
+					{
+						if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1)
+						{
+							mapInfo[i][j] = 1;
+						}
+					}
+				}
+				return 1;
+			}//맵충돌
+
+		}
+	}
+	return 3;
 }
