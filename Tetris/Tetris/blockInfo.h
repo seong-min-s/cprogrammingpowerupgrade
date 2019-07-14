@@ -1,4 +1,3 @@
-#pragma once
 #ifndef _BLOCK_INFO_H_
 #define _BLOCK_INFO_H_
 

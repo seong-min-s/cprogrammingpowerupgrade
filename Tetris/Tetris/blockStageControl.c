@@ -1,13 +1,16 @@
-#include<time.h>
-#include "common.h"
-#include "point.h"
 #include "blockInfo.h"
+#include<time.h>
+#include "point.h"
 #include "keyCurControl.h"
-#include "mapInfo.h"
+#include "common.h"
+//#include "boardInfo.h"
+extern int boardInfo[11][12];
 
 static int currentBlockModel;
 static int rotateSte;
 static int curPosX, curPosY;
+
+enum{LEFT,RIGHT,UP,DOWN};
 
 void InitNewBlockPos(int x, int y)
 {
@@ -67,7 +70,14 @@ void DeleteBlock(char blockInfo[][4])
 }
 void BlockDown(void)
 {
-	//checkCollision(); 충돌검사
+	/*int check = checkCollision(); 충돌검사
+		if(충돌)
+		{
+			InitNewBlockPos()
+			ChooseBlock()
+			return;
+		}
+	*/
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosY += 1;
 
@@ -77,6 +87,18 @@ void BlockDown(void)
 
 void ShiftLeft(void)
 {
+	/*int check = checkCollision(); 충돌검사
+		if(충돌)
+		{
+			return;
+		}
+	*/
+	if (CheckCollision(LEFT))
+	{
+		//InitNewBlockPos(10,0);
+		//ChooseBlock();
+			return;
+	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosX -= 2;
 	SetCurrentCursorPos(curPosX, curPosY);
@@ -84,6 +106,12 @@ void ShiftLeft(void)
 }
 void ShiftRight(void)
 {
+	/*int check = checkCollision(); 충돌검사
+	if(충돌)
+	{
+		return;
+	}
+	*/
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosX += 2;
 	SetCurrentCursorPos(curPosX, curPosY);
@@ -102,44 +130,27 @@ void RotateBlock(void)
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
 }
-int CheckCollision()
+int CheckCollision(int dir)
 {
-	/*if ((curPosX + blockDetails[currentBlockModel].row < 0 && curPosX + blockDetails[currentBlockModel].col>99))
-		return 0;*/
-	if (curPosY + blockDetails[currentBlockModel].col > 30)//바닥충돌
+	int cur_model = GetCurrentBlockIdx();
+	point curPos = GetCurrentCursorPos();
+	int i, j;
+	int dream=curPos.x-2;
+	switch (dir)
 	{
-		for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
+	case LEFT :
+		for (i = curPos.y; i < curPos.y+blockDetails[cur_model].row; i++)
 		{
-			for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
+			for ((j = dream); j < (curPos.x-1)+blockDetails[cur_model].col; j++)
 			{
-				if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1)
-				{
-					mapInfo[i][j] = 1;
-				}
+				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j - 11] == 1)
+					return 1;
 			}
 		}
 		return 0;
-	}
-	for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
-	{
-		for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
-		{
-			if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1 && mapInfo[i][j] != 0)
-			{
-				for (int i = curPosY + 0; i < curPosY + blockDetails[currentBlockModel].row; i++)
-				{
-					for (int j = curPosX + 0; j < curPosX + blockDetails[currentBlockModel].col; j++)
-					{
-						if (blockModel[GetCurrentBlockIdx()][i - curPosY][j - curPosX] == 1)
-						{
-							mapInfo[i][j] = 1;
-						}
-					}
-				}
-				return 1;
-			}//맵충돌
+		break;
 
-		}
+	default:
+		break;
 	}
-	return 3;
 }

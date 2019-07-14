@@ -10,5 +10,5 @@ void BlockDown(void);
 void ShiftLeft(void);
 void ShiftRight(void);
 void RotateBlock(void);
-int CheckCollision(void);
+int CheckCollision(int dir);
 #endif

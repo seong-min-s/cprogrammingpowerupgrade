@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="blockStageControl.c" />
+    <ClCompile Include="drawBoard.c" />
     <ClCompile Include="keyCurControl.c" />
     <ClCompile Include="tetrisMain.c" />
   </ItemGroup>
@@ -28,7 +29,7 @@
     <ClInclude Include="blockStageControl.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="KeyCurControl.h" />
-    <ClInclude Include="mapInfo.h" />
+    <ClInclude Include="boardInfo.h" />
     <ClInclude Include="point.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

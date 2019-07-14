@@ -24,6 +24,9 @@
     <ClCompile Include="tetrisMain.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="drawBoard.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="blockInfo.h">
@@ -41,7 +44,7 @@
     <ClInclude Include="common.h">
       <Filter>리소스 파일\헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="mapInfo.h">
+    <ClInclude Include="boardInfo.h">
       <Filter>리소스 파일\헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
