@@ -1,4 +1,4 @@
-#define START_CURPOS_X		(5*2+5)
+#define START_CURPOS_X		(5*2+4)
 #define START_CURPOS_Y		(0)
 #define SYS_DELAY			100
 

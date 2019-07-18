@@ -17,7 +17,7 @@ void DrawGameBoard(void)
 	{
 		if (boardInfo[y][BOARD_WIDTH + 1] == 1)
 		{
-			SetCurrentCursorPos(BOARD_ORIGIN_X+2*(BOARD_WIDTH+1), y + BOARD_ORIGIN_Y);
+			SetCurrentCursorPos(BOARD_ORIGIN_X+1+2*(BOARD_WIDTH)+1, y + BOARD_ORIGIN_Y);
 			printf("¦¢");
 		}
 	}

@@ -70,14 +70,13 @@ void DeleteBlock(char blockInfo[][4])
 }
 void BlockDown(void)
 {
-	/*int check = checkCollision(); 충돌검사
-		if(충돌)
-		{
-			InitNewBlockPos()
-			ChooseBlock()
-			return;
-		}
-	*/
+	if(CheckCollision(DOWN))
+	{
+		InitNewBlockPos(14,0);
+		ChooseBlock();
+		return;
+	}
+	
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosY += 1;
 
@@ -106,12 +105,10 @@ void ShiftLeft(void)
 }
 void ShiftRight(void)
 {
-	/*int check = checkCollision(); 충돌검사
-	if(충돌)
+	if(CheckCollision(RIGHT))
 	{
 		return;
 	}
-	*/
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosX += 2;
 	SetCurrentCursorPos(curPosX, curPosY);
@@ -130,26 +127,73 @@ void RotateBlock(void)
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
 }
+void MarkToMap(void)
+{
+	int cur_model = GetCurrentBlockIdx();
+	point curPos = GetCurrentCursorPos();
+	int i, j;
+
+
+	for (i = curPos.y; i < curPos.y + blockDetails[cur_model].row; i++)
+	{
+		for (j = (curPos.x - 10) / 2; j < (curPos.x - 10) / 2 + blockDetails[cur_model].col; j++)
+		{
+			if (blockModel[cur_model][i - curPos.y][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 0)
+			{
+				boardInfo[i][j] = 1;
+			}
+		}
+	}
+}
 int CheckCollision(int dir)
 {
 	int cur_model = GetCurrentBlockIdx();
 	point curPos = GetCurrentCursorPos();
 	int i, j;
-	int dream=curPos.x-2;
+	int dream = 0;
 	switch (dir)
 	{
 	case LEFT :
+		dream = (curPos.x-10 )/2-1;
 		for (i = curPos.y; i < curPos.y+blockDetails[cur_model].row; i++)
 		{
-			for ((j = dream); j < (curPos.x-1)+blockDetails[cur_model].col; j++)
+			for ((j = dream); j < dream+blockDetails[cur_model].col; j++)
 			{
-				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j - 11] == 1)
+				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j] == 1)
 					return 1;
 			}
 		}
 		return 0;
 		break;
 
+	case RIGHT :
+		dream =(curPos.x -10)/ 2+1;
+		for (i = curPos.y; i < curPos.y + blockDetails[cur_model].row; i++)
+		{
+			for ((j = dream); j < dream + blockDetails[cur_model].col; j++)
+			{
+				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j] == 1)
+					return 1;
+			}
+		}
+		return 0;
+		break;
+
+	case DOWN:
+		dream = curPos.y+1 ;
+		for (i = dream; i < dream + blockDetails[cur_model].row; i++)
+		{
+			for ( j=(curPos.x - 10) / 2;  j < (curPos.x - 10) / 2 + blockDetails[cur_model].col; j++)
+			{
+				if (blockModel[cur_model][i - dream][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 1)
+				{	
+					MarkToMap();
+					return 1;
+				}
+			}
+		}
+		return 0;
+		break;
 	default:
 		break;
 	}
