@@ -117,12 +117,21 @@ void ShiftRight(void)
 void RotateBlock(void)
 {
 	int nextRotSte;
-
+	int breakcount = 0;
+	while (CheckCollision(UP))
+	{
+		curPosX -= 2;
+		if (CheckCollision(UP))
+		{
+			curPosX += 2;
+			return;
+		}
+	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
-
+	/*회전 반영 전*/
 	nextRotSte = rotateSte + 1;
 	nextRotSte %= 4;
-	rotateSte = nextRotSte;
+	rotateSte = nextRotSte;//회전반영
 
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
@@ -148,7 +157,7 @@ void MarkToMap(void)
 int CheckCollision(int dir)
 {
 	int cur_model = GetCurrentBlockIdx();
-	point curPos = GetCurrentCursorPos();
+	point curPos = { curPosX,curPosY };
 	int i, j;
 	int dream = 0;
 	switch (dir)
@@ -194,6 +203,27 @@ int CheckCollision(int dir)
 		}
 		return 0;
 		break;
+
+	case UP:
+
+		dream = cur_model + 1;
+
+		if (dream == currentBlockModel + 4)
+		{
+			dream = currentBlockModel;
+		}
+		for (i = curPos.y; i < curPos.y + blockDetails[dream].row; i++)
+		{
+			for (j = (curPos.x - 10) / 2; j < (curPos.x - 10) / 2 + blockDetails[dream].col; j++)
+			{
+				if (blockModel[dream][i - curPos.y][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 1)
+				{
+					return 1;
+				}
+			}
+		}
+		return 0;
+
 	default:
 		break;
 	}
