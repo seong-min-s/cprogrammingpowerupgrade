@@ -28,10 +28,16 @@ void DrawGameBoard(void)
 			SetCurrentCursorPos(BOARD_ORIGIN_X + x, BOARD_ORIGIN_Y+BOARD_HEIGHT);
 			if(x==0)
 				printf("¦¦");
-			else if(x== BOARD_WIDTH+1)
+			else if (x == BOARD_WIDTH + 1)
+			{
+				SetCurrentCursorPos(BOARD_ORIGIN_X + 2*x, BOARD_ORIGIN_Y + BOARD_HEIGHT);
 				printf("¦¥");
+			}
 			else
-				printf("¡á",x);
+			{
+				SetCurrentCursorPos(BOARD_ORIGIN_X + 2 * x, BOARD_ORIGIN_Y + BOARD_HEIGHT);
+				printf("¦¡");
+			}
 		}
 	}
 }
