@@ -86,16 +86,8 @@ void BlockDown(void)
 
 void ShiftLeft(void)
 {
-	/*int check = checkCollision(); 충돌검사
-		if(충돌)
-		{
-			return;
-		}
-	*/
 	if (CheckCollision(LEFT))
 	{
-		//InitNewBlockPos(10,0);
-		//ChooseBlock();
 			return;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
@@ -107,7 +99,7 @@ void ShiftRight(void)
 {
 	if(CheckCollision(RIGHT))
 	{
-		return;
+			return;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosX += 2;
@@ -118,7 +110,7 @@ void RotateBlock(void)
 {
 	int nextRotSte;
 	int deficiency = 0;
-	point firstp = { curPosX,curPosY };
+	point firstp = { curPosX,curPosY };//블럭 복원용
 	deficiency=CheckCollision(UP);
 	if (deficiency > 0)
 	{
