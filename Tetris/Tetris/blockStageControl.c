@@ -117,15 +117,19 @@ void ShiftRight(void)
 void RotateBlock(void)
 {
 	int nextRotSte;
-	int breakcount = 0;
-	while (CheckCollision(UP))
+	int deficiency = 0;
+	point firstp = { curPosX,curPosY };
+	deficiency=CheckCollision(UP);
+	if (deficiency > 0)
 	{
-		curPosX -= 2;
-		if (CheckCollision(UP))
-		{
-			curPosX += 2;
-			return;
-		}
+		curPosX = curPosX - 2 * deficiency;
+		deficiency = 0;
+		deficiency = CheckCollision(UP);
+	}
+	if (deficiency > 0)
+	{
+		curPosX = firstp.x;
+		return;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	/*회전 반영 전*/
@@ -218,7 +222,7 @@ int CheckCollision(int dir)
 			{
 				if (blockModel[dream][i - curPos.y][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 1)
 				{
-					return 1;
+					return (curPos.x - 10) / 2 + blockDetails[dream].col - j + 1;
 				}
 			}
 		}

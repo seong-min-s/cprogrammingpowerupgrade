@@ -6,7 +6,6 @@ int main(void)
 {
 	DrawGameBoard();
 	
-	int collision;
 	InitKeyDelayRate(20);
 	
 	RemoveCursor();
