@@ -58,6 +58,7 @@ void ProcessKeyInput(void)
 					break;
 				case UP:
 					RotateBlock();
+					break;
 			}
 		}
 		if (i%keyDelayRate == 0)

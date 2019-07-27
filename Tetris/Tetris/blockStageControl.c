@@ -5,7 +5,7 @@
 #include "common.h"
 //#include "boardInfo.h"
 extern int boardInfo[11][12];
-
+extern void MarkToMap();
 static int currentBlockModel;
 static int rotateSte;
 static int curPosX, curPosY;
@@ -68,67 +68,66 @@ void DeleteBlock(char blockInfo[][4])
 	}
 	SetCurrentCursorPos(curPos.x, curPos.y);
 }
-void BlockDown(void)
+int BlockDown(void)
 {
-	if(CheckCollision(DOWN))
-	{
-		InitNewBlockPos(14,0);
-		ChooseBlock();
-		return;
-	}
-	
-	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	curPosY += 1;
-
+	if(CheckCollision())
+	{
+		curPosY -= 1;
+		MarkToMap();
+		return 1;
+	}
+	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
+	return 0;
 }
 
 void ShiftLeft(void)
 {
-	if (CheckCollision(LEFT))
+	curPosX -= 2;
+	if (CheckCollision())
 	{
+			curPosX += 2;
 			return;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
-	curPosX -= 2;
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
 }
 void ShiftRight(void)
 {
-	if(CheckCollision(RIGHT))
+	curPosX += 2;
+	if(CheckCollision())
 	{
+			curPosX -= 2;
 			return;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
-	curPosX += 2;
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
 }
 void RotateBlock(void)
 {
-	int nextRotSte;
-	int deficiency = 0;
-	point firstp = { curPosX,curPosY };//블럭 복원용
-	deficiency=CheckCollision(UP);
-	if (deficiency > 0)
-	{
-		curPosX = curPosX - 2 * deficiency;
-		deficiency = 0;
-		deficiency = CheckCollision(UP);
-	}
-	if (deficiency > 0)
-	{
-		curPosX = firstp.x;
+	int afterRotSte,deficiency = 0;
+	int beforeRotSte = rotateSte;
+	point beforePos = { curPosX,curPosY };
+
+	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
+
+	afterRotSte = rotateSte + 1;
+	afterRotSte %= 4;
+	rotateSte = afterRotSte;
+	deficiency = CheckCollision();
+	curPosX -= 2 * deficiency;
+
+	if (CheckCollision())
+	{	
+		rotateSte = beforeRotSte;
+		curPosX = beforePos.x;
+		ShowBlock(blockModel[GetCurrentBlockIdx()]);
 		return;
 	}
-	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
-	/*회전 반영 전*/
-	nextRotSte = rotateSte + 1;
-	nextRotSte %= 4;
-	rotateSte = nextRotSte;//회전반영
-
 	SetCurrentCursorPos(curPosX, curPosY);
 	ShowBlock(blockModel[GetCurrentBlockIdx()]);
 }
@@ -137,8 +136,6 @@ void MarkToMap(void)
 	int cur_model = GetCurrentBlockIdx();
 	point curPos = GetCurrentCursorPos();
 	int i, j;
-
-
 	for (i = curPos.y; i < curPos.y + blockDetails[cur_model].row; i++)
 	{
 		for (j = (curPos.x - 10) / 2; j < (curPos.x - 10) / 2 + blockDetails[cur_model].col; j++)
@@ -150,77 +147,18 @@ void MarkToMap(void)
 		}
 	}
 }
-int CheckCollision(int dir)
+int CheckCollision(void)
 {
-	int cur_model = GetCurrentBlockIdx();
-	point curPos = { curPosX,curPosY };
-	int i, j;
-	int dream = 0;
-	switch (dir)
+	int num=GetCurrentBlockIdx();
+	point boardPos = { (curPosX - 10) / 2, curPosY };
+
+	for (int i = 0; i < blockDetails[num].row; i++)
 	{
-	case LEFT :
-		dream = (curPos.x-10 )/2-1;
-		for (i = curPos.y; i < curPos.y+blockDetails[cur_model].row; i++)
+		for (int j = 0; j < blockDetails[num].col; j++)
 		{
-			for ((j = dream); j < dream+blockDetails[cur_model].col; j++)
-			{
-				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j] == 1)
-					return 1;
-			}
+			if (blockModel[num][i][j ] == 1 && boardInfo[boardPos.y+i][boardPos.x+j] == 1)
+				return blockDetails[num].col-j;
 		}
-		return 0;
-		break;
-
-	case RIGHT :
-		dream =(curPos.x -10)/ 2+1;
-		for (i = curPos.y; i < curPos.y + blockDetails[cur_model].row; i++)
-		{
-			for ((j = dream); j < dream + blockDetails[cur_model].col; j++)
-			{
-				if (blockModel[cur_model][i - curPos.y][j - dream] == 1 && boardInfo[i][j] == 1)
-					return 1;
-			}
-		}
-		return 0;
-		break;
-
-	case DOWN:
-		dream = curPos.y+1 ;
-		for (i = dream; i < dream + blockDetails[cur_model].row; i++)
-		{
-			for ( j=(curPos.x - 10) / 2;  j < (curPos.x - 10) / 2 + blockDetails[cur_model].col; j++)
-			{
-				if (blockModel[cur_model][i - dream][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 1)
-				{	
-					MarkToMap();
-					return 1;
-				}
-			}
-		}
-		return 0;
-		break;
-
-	case UP:
-
-		dream = cur_model + 1;
-
-		if (dream == currentBlockModel + 4)
-		{
-			dream = currentBlockModel;
-		}
-		for (i = curPos.y; i < curPos.y + blockDetails[dream].row; i++)
-		{
-			for (j = (curPos.x - 10) / 2; j < (curPos.x - 10) / 2 + blockDetails[dream].col; j++)
-			{
-				if (blockModel[dream][i - curPos.y][j - (curPos.x - 10) / 2] == 1 && boardInfo[i][j] == 1)
-				{
-					return (curPos.x - 10) / 2 + blockDetails[dream].col - j + 1;
-				}
-			}
-		}
-		return 0;
-
-	default:
-		break;
 	}
+	return 0;
 }
