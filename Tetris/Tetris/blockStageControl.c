@@ -6,6 +6,7 @@
 //#include "boardInfo.h"
 extern int boardInfo[11][12];
 extern void MarkToMap();
+extern void BoardUpdate();
 static int currentBlockModel;
 static int rotateSte;
 static int curPosX, curPosY;
@@ -75,6 +76,7 @@ int BlockDown(void)
 	{
 		curPosY -= 1;
 		MarkToMap();
+		BoardUpdate();
 		return 1;
 	}
 	DeleteBlock(blockModel[GetCurrentBlockIdx()]);
@@ -161,4 +163,66 @@ int CheckCollision(void)
 		}
 	}
 	return 0;
+}
+void BoardUpdate(void)
+{
+	int temp[30][12] = { 0 };
+	int blockNum = GetCurrentBlockIdx();
+	int deliteLineSum=blockDetails[blockNum].row;
+	int delete_pos=-1, delete_num=0;
+	for (int y = 0; y < 30; y++)
+	{
+		for (int x = 1; x < 11; x++)
+		{
+			if (boardInfo[y][x] == 1)
+			{
+				if (x == 10)
+				{
+					delete_num++;
+					if (delete_pos == -1)
+					{
+						delete_pos = y;
+					}
+				}
+				continue;
+			}else{
+				break;
+			}
+		}
+	}
+	//복사
+	for (int y = 0; y < delete_pos; y++)
+	{
+		for (int x = 1; x < 11; x++)
+		{
+			temp[y][x] = boardInfo[y][x];
+		}
+	}
+	//붙여넣기
+	for (int y = 0; y < delete_num; y++)
+	{
+		for (int x = 1; x < 11; x++)
+		{
+			boardInfo[y][x]=0;
+		}
+	}
+	for (int y = delete_num; y < delete_num+delete_pos; y++)
+	{
+		for (int x = 1; x < 11; x++)
+		{
+			boardInfo[y][x] = temp[y-delete_num][x];
+		}
+	}
+	for (int y = 0 ; y < 30;  y++)
+	{
+		for (int x = 1; x < 11; x++)
+		{
+			SetCurrentCursorPos(10+ x * 2,  y);
+			if (boardInfo[y][x] == 1)
+				printf("■"); 
+			else
+				printf("  ");
+		}
+	}
+	SetCurrentCursorPos(curPosX, curPosY);
 }

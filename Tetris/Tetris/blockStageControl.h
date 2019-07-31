@@ -12,5 +12,5 @@ void ShiftRight(void);
 void RotateBlock(void);
 void MarkToMap(void);
 int CheckCollision(void);
-
+void BoardUpdate(void);
 #endif

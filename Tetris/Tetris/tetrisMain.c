@@ -21,7 +21,6 @@ int main(void)
 		{
 			printf("GAME OVER\n");
 		}
-
 		while (1)
 		{
 			if (BlockDown())
